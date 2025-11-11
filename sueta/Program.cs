@@ -9,6 +9,7 @@ namespace sueta
             //string word = Console.ReadLine();
             //int num = Convert.ToInt32(Console.ReadLine());
             //int[] numbers = [1, 2, 3, 4, 7];
+            //double s = Convert.ToDouble(Console.ReadLine());
             char s = Convert.ToChar(Console.ReadLine());
             Console.WriteLine(TranslationCapitalLetter(s));
         }
@@ -98,11 +99,77 @@ namespace sueta
             }
             return s;
         }
-        static string MakeCamelCase(string word)
+        static string MakeCamelCase(string word)//8
         {
-            string newString = "";
+            string[] words = word.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length == 1)
+                return words[0].ToLower();
+            string result = words[0].ToLower();
+            for (int i = 1; i < words.Length; i++)
+            {
+                string wordy = words[i];
+                if (!string.IsNullOrEmpty(wordy))
+                {
+                    result += char.ToUpper(wordy[0]) + wordy.Substring(1).ToLower();
+                }
+            }
 
+            return result;
+        }
+        static bool ValidPhoneNumber(string word)
+        {
+            if (string.IsNullOrEmpty(word))
+                return false;
+            string[] parts = word.Split('-');
+            if (parts.Length != 5)
+                return false;
+            if (parts[0] != "+7")
+                return false;
 
+            if (parts[1].Length != 3 || !IsAllDigits(parts[1])) return false;
+            if (parts[2].Length != 3 || !IsAllDigits(parts[2])) return false;
+            if (parts[3].Length != 2 || !IsAllDigits(parts[3])) return false;
+            if (parts[4].Length != 2 || !IsAllDigits(parts[4])) return false;
+
+            return true;
+        }
+        static bool IsAllDigits(string word)//9
+        {
+            foreach (char c in word)
+            {
+                if (!char.IsDigit(c))
+                    return false;
+            }
+            return true;
+        }
+        static string FormatMoney(double s)//10
+        {
+            return s.ToString("N2").Replace(",", " ");
+        }
+        static int[] WithdrawMoneySimple(int num, int[] numbers)//11
+        {
+            Array.Sort(numbers);
+            Array.Reverse(numbers);
+            int[] counts = new int[numbers.Length];
+            int remaining = num;
+
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                counts[i] = remaining / numbers[i];
+                remaining %= numbers[i];
+            }
+            if (remaining != 0)
+                return new int[0];
+
+            List<int> result = new List<int>();
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                for (int j = 0; j < counts[i]; j++)
+                {
+                    result.Add(numbers[i]);
+                }
+            }
+            return result.ToArray();
         }
     }
 }
